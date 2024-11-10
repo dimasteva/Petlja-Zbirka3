@@ -47,3 +47,75 @@ Isla 16
 Andrew 7
 */
 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+#define forn(i, n) for (int i = 0; i < int(n); i++)
+#define forn1(i, n) for (int i = 1; i < int(n); i++)
+#define all(c) (c).begin(), (c).end()
+#define pb push_back
+#define MOD 1000000007 // 998244353
+#define FIO                \
+    ios::sync_with_stdio(false); \
+    cin.tie(0);                  \
+    cout.tie(0);
+
+void dfs(map<string, vector<string>>& children, string& king,
+		map<string, int>& order)
+	{
+		int r = 0;
+		stack<string> st;
+		
+		st.push(king);
+		while(!st.empty())
+		{
+			string s = st.top();
+			st.pop();
+			order[s] = r++;
+			
+			auto it = children.find(s);
+			if (it != children.end())
+			{
+				vector<string>& s_children = it->second;
+				for (auto it = s_children.rbegin(); it != s_children.rend(); it++)
+					st.push(*it);
+			}
+		}
+	}
+
+int main() 
+{
+    map<string, bool> has_parent;
+    map<string, vector<string>> children;
+    int n; cin >> n;
+    forn(i, n-1)
+    {
+    	string parent, child;
+    	cin >> parent >> child;
+    	has_parent[child] = true;
+    	if (has_parent.find(parent) == has_parent.end())
+    		has_parent[parent] = false;
+    	
+    	children[parent].pb(child);
+	}
+	for (auto itr : children)
+	{
+		cout << itr.first << ": ";
+		for (auto itr2 : itr.second)
+			cout << itr2 << " ";
+		cout << endl; 
+	}
+	string king;
+	for (auto itr : has_parent)
+		if (!itr.second)
+			king = itr.first;
+	
+	map<string, int> order;
+	dfs(children, king, order);
+	string q;
+	while(cin >> q)
+		cout << q << " " << order[q] << endl;
+}
